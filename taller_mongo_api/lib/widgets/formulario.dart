@@ -24,8 +24,6 @@ class _FormularioPersonaState extends State<FormularioPersona> {
   @override
   void initState() {
     super.initState();
-
-    // Inicializa controladores con valores existentes si se edita
     _nombreController =
         TextEditingController(text: widget.persona?.nombre ?? "");
     _apellidoController =
@@ -55,45 +53,111 @@ class _FormularioPersonaState extends State<FormularioPersona> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title:
-          Text(widget.persona == null ? "Agregar Persona" : "Editar Persona"),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _nombreController,
-              decoration: const InputDecoration(labelText: "Nombre"),
-              validator: (value) => value!.isEmpty ? "Ingrese un nombre" : null,
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 10,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Título estilizado
+                Text(
+                  widget.persona == null ? "Agregar Persona" : "Editar Persona",
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 70, 130, 180),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Campo: Nombre
+                TextFormField(
+                  controller: _nombreController,
+                  decoration: InputDecoration(
+                    labelText: "Nombre",
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Por favor, ingresa el nombre" : null,
+                ),
+                const SizedBox(height: 15),
+
+                // Campo: Apellido
+                TextFormField(
+                  controller: _apellidoController,
+                  decoration: InputDecoration(
+                    labelText: "Apellido",
+                    prefixIcon: const Icon(Icons.family_restroom),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Por favor, ingresa el apellido" : null,
+                ),
+                const SizedBox(height: 15),
+
+                // Campo: Teléfono
+                TextFormField(
+                  controller: _telefonoController,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    labelText: "Teléfono",
+                    prefixIcon: const Icon(Icons.phone),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Por favor, ingresa el teléfono" : null,
+                ),
+                const SizedBox(height: 25),
+
+                // Botones
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _guardar,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 70, 130, 180),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                      ),
+                      child: const Text(
+                        "Guardar",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            TextFormField(
-              controller: _apellidoController,
-              decoration: const InputDecoration(labelText: "Apellido"),
-              validator: (value) =>
-                  value!.isEmpty ? "Ingrese un apellido" : null,
-            ),
-            TextFormField(
-              controller: _telefonoController,
-              decoration: const InputDecoration(labelText: "Teléfono"),
-              keyboardType: TextInputType.phone,
-              validator: (value) =>
-                  value!.isEmpty ? "Ingrese un teléfono" : null,
-            ),
-          ],
+          ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text("Cancelar"),
-        ),
-        ElevatedButton(
-          onPressed: _guardar,
-          child: const Text("Guardar"),
-        ),
-      ],
     );
   }
 }

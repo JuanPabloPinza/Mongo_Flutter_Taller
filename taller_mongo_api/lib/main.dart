@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'view/vistapersonas.dart';
+import 'view/welcomeScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Gestión de Personas",
       theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: const VistaPersonas(),
+      home: const PantallaLogin(),
     );
   }
 }

@@ -53,13 +53,12 @@ class _VistaPersonasState extends State<VistaPersonas> {
       String apellido, String telefono) async {
     try {
       final personaEditada = ModeloPersona(
-        id: persona.id, // Aquí aseguramos que el ID sea el correcto
+        id: persona.id,
         nombre: nombre,
         apellido: apellido,
         telefono: telefono,
       );
-      await _controlador
-          .actualizarPersona(personaEditada); // Llamada a la función correcta
+      await _controlador.actualizarPersona(personaEditada);
       _mostrarAlerta("Éxito", "Persona editada correctamente.");
       _cargarPersonas();
     } catch (e) {
@@ -90,40 +89,6 @@ class _VistaPersonasState extends State<VistaPersonas> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Personas")),
-      body: ListView.builder(
-        itemCount: _personas.length,
-        itemBuilder: (context, index) {
-          final persona = _personas[index];
-          return ListTile(
-            title: Text("${persona.nombre} ${persona.apellido}"),
-            subtitle: Text("Teléfono: ${persona.telefono}"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () => _mostrarFormulario(persona: persona),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => _eliminarPersona(persona.id),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _mostrarFormulario(),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
   Future<void> _eliminarPersona(String id) async {
     try {
       await _controlador.eliminarPersona(id);
@@ -132,5 +97,101 @@ class _VistaPersonasState extends State<VistaPersonas> {
     } catch (e) {
       _mostrarAlerta("Error", "No se pudo eliminar la persona.");
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Personas"),
+        backgroundColor: const Color.fromARGB(255, 70, 130, 180),
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 28),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = (constraints.maxWidth ~/ 200).clamp(2, 6);
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.fromARGB(255, 200, 220, 240),
+                  Color.fromARGB(255, 171, 212, 230),
+                  Color.fromARGB(255, 70, 130, 180),
+                ],
+              ),
+            ),
+            child: GridView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: _personas.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 19/20,
+              ),
+              itemBuilder: (context, index) {
+                final persona = _personas[index];
+                return Card(
+                  color: Colors.white.withOpacity(0.9),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 28), // Espacio superior
+                      CircleAvatar(
+                        radius: 25, 
+                        backgroundColor: const Color.fromARGB(255, 70, 130, 180),
+                        child: Text(
+                          persona.nombre[0],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20, 
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "${persona.nombre} ${persona.apellido}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18, 
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Text(
+                        "Teléfono: ${persona.telefono}",
+                        style: const TextStyle(fontSize: 14, color: Colors.black54),
+                      ),
+                      const Spacer(), // Empuja los botones hacia abajo
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _mostrarFormulario(persona: persona),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _eliminarPersona(persona.id),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10), // Espacio inferior
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _mostrarFormulario(),
+        backgroundColor: Colors.white,
+        child: const Icon(Icons.add, color: Color.fromARGB(255, 70, 130, 180)),
+      ),
+    );
   }
 }
